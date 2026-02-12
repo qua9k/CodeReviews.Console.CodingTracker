@@ -1,72 +1,28 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 
 namespace HabitTracker;
 
-class HabitTracker
+static class CrudOps
 {
-    static void Main()
-    {
-        string databaseFile = "habit.db";
-        using var connection = new SqliteConnection();
+    internal static readonly string Create = "create";
+    internal static readonly string Read = "read";
+    internal static readonly string Update = "update";
+    internal static readonly string Delete = "delete";
+}
 
-        if (!File.Exists(databaseFile))
-        {
-            connection.ConnectionString = $"Data Source={databaseFile}";
-            connection.Open();
-            CreateDatabase(connection);
-            SeedDatabase(connection);
-            Pause();
-        }
-        else
-        {
-            connection.ConnectionString = $"Data Source={databaseFile}";
-            connection.Open();
-        }
-
-        bool connected = true;
-
-        while (connected)
-        {
-            PrintMenuOptions();
-
-            string? input = Console.ReadLine();
-
-            switch (input)
-            {
-                case "c":
-                    CreateEntry(connection);
-                    break;
-                case "r":
-                    ReadEntry(connection);
-                    break;
-                case "u":
-                    UpdateEntry(connection);
-                    break;
-                case "d":
-                    DeleteEntry(connection);
-                    break;
-                case "x":
-                    connected = CloseConnection(connection);
-                    break;
-                default:
-                    PrintInputUnknown();
-                    break;
-            }
-
-            Console.WriteLine();
-        }
-    }
-
-    private static bool CloseConnection(SqliteConnection connection)
+public class Database
+{
+    public static bool CloseConnection(SqliteConnection connection)
     {
         Console.WriteLine("Goodbye.");
         connection.Close();
         return false;
     }
 
-    private static void CreateDatabase(SqliteConnection connection)
+    public static void CreateDatabase(SqliteConnection connection)
     {
-        Console.WriteLine($"Creating database...");
+        Console.WriteLine("Creating database...");
+        Console.WriteLine("Database created.");
 
         var command = connection.CreateCommand();
 
@@ -82,7 +38,7 @@ class HabitTracker
         command.ExecuteNonQuery();
     }
 
-    private static void SeedDatabase(SqliteConnection connection)
+    public static void SeedDatabase(SqliteConnection connection)
     {
         var seedCommand = connection.CreateCommand();
 
@@ -98,7 +54,7 @@ class HabitTracker
         seedCommand.ExecuteNonQuery();
     }
 
-    private static void CreateEntry(SqliteConnection connection)
+    public static void CreateEntry(SqliteConnection connection)
     {
         Console.Clear();
 
@@ -135,18 +91,33 @@ class HabitTracker
 
         seedCommand.ExecuteNonQuery();
 
-        Pause();
+        UserInterface.Pause();
     }
 
     // [[todo]] :: implement
-    private static void UpdateEntry(SqliteConnection connection)
+    public static void UpdateEntry(SqliteConnection connection)
     {
         string? primaryKey = GetId(CrudOps.Update);
         var updateCommand = connection.CreateCommand();
-        Pause();
+
+        DateTime newDate = DateTime.Now;
+        int newCount = 99;
+
+        Console.WriteLine($"the date: {newDate}");
+
+        updateCommand.CommandText =
+            @$"
+                UPDATE tracker
+                SET date = '{newDate}',
+                    count = {newCount}
+                WHERE
+                    id = {primaryKey}
+            ";
+
+        UserInterface.Pause();
     }
 
-    private static void DeleteEntry(SqliteConnection connection)
+    public static void DeleteEntry(SqliteConnection connection)
     {
         string? primaryKey = GetId(CrudOps.Delete);
         var deleteCommand = connection.CreateCommand();
@@ -160,10 +131,10 @@ class HabitTracker
 
         deleteCommand.ExecuteNonQuery();
 
-        Pause();
+        UserInterface.Pause();
     }
 
-    private static string GetId(string crudOp)
+    public static string GetId(string crudOp)
     {
         string message = $"Enter the id of the entry to {crudOp}";
 
@@ -197,7 +168,7 @@ class HabitTracker
         return id;
     }
 
-    private static void ReadEntry(SqliteConnection connection)
+    public static void ReadEntry(SqliteConnection connection)
     {
         string? primaryKey = GetId(CrudOps.Read);
         var selectCommand = connection.CreateCommand();
@@ -231,45 +202,6 @@ class HabitTracker
             }
         }
 
-        Pause();
+        UserInterface.Pause();
     }
-
-    private static void Pause()
-    {
-        Console.WriteLine("\nPress any key to return to the main menu.");
-        Console.ReadKey();
-    }
-
-    private static void PrintMenuOptions()
-    {
-        Console.Clear();
-        Console.Write(
-            """
-            Please choose an option and press 'Enter':
-
-            'c': Create entry
-            'r': Read entry
-            'u': Update entry
-            'd': Delete entry
-            'x': Exit
-
-            Your choice: 
-            """
-        );
-    }
-
-    private static void PrintInputUnknown()
-    {
-        Console.Clear();
-        Console.WriteLine("Your input was not understood.");
-        Pause();
-    }
-}
-
-static class CrudOps
-{
-    internal static readonly string Create = "create";
-    internal static readonly string Read = "read";
-    internal static readonly string Update = "update";
-    internal static readonly string Delete = "delete";
 }
