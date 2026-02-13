@@ -1,41 +1,20 @@
 using HabitTracker;
 using Microsoft.Data.Sqlite;
 
-static class CrudOps
-{
-    internal static readonly string Create = "create";
-    internal static readonly string Read = "read";
-    internal static readonly string Update = "update";
-    internal static readonly string Delete = "delete";
-}
-
 class Crud : ICrudController
 {
     public static void CreateEntry(SqliteConnection connection)
     {
         Console.Clear();
-
         Console.Write("Enter the date (YYYY-mm-dd): ");
-        string? date = Console.ReadLine();
 
-        while (!DateTime.TryParse(date, out DateTime _))
-        {
-            Console.Clear();
-            Console.WriteLine("The date must be in YYYY-mm-dd format.");
-            Console.Write("Please re-enter the date: ");
-            date = Console.ReadLine();
-        }
+        string? date = Console.ReadLine();
+        date = Validator.ValidateField("date", date);
 
         Console.Write("Enter the habit count: ");
-        string? count = Console.ReadLine();
 
-        while (!uint.TryParse(count, out uint _))
-        {
-            Console.Clear();
-            Console.WriteLine("Habit count must be a number greater than 0.");
-            Console.Write("Please re-enter the habit count: ");
-            count = Console.ReadLine();
-        }
+        string? count = Console.ReadLine();
+        count = Validator.ValidateField("count", count);
 
         var seedCommand = connection.CreateCommand();
 
@@ -52,9 +31,10 @@ class Crud : ICrudController
     }
 
     // [[todo]] :: implement
+    // [[bug]] ::
     public static void UpdateEntry(SqliteConnection connection)
     {
-        string? primaryKey = GetId(CrudOps.Update);
+        string? primaryKey = PromptForId(CrudOps.Update);
         var updateCommand = connection.CreateCommand();
 
         DateTime newDate = DateTime.Now;
@@ -76,7 +56,7 @@ class Crud : ICrudController
 
     public static void DeleteEntry(SqliteConnection connection)
     {
-        string? primaryKey = GetId(CrudOps.Delete);
+        string? primaryKey = PromptForId(CrudOps.Delete);
         var deleteCommand = connection.CreateCommand();
 
         deleteCommand.CommandText = $"DELETE FROM tracker";
@@ -91,7 +71,7 @@ class Crud : ICrudController
         UserInterface.Pause();
     }
 
-    public static string GetId(string crudOp)
+    public static string PromptForId(string crudOp)
     {
         string message = $"Enter the id of the entry to {crudOp}";
 
@@ -103,7 +83,6 @@ class Crud : ICrudController
         }
         else
         {
-            // [[note]] :: only Delete and Read can target all entries
             Console.Write($"{message} ('*' for all entries): ");
         }
 
@@ -114,20 +93,14 @@ class Crud : ICrudController
             return id;
         }
 
-        while (!int.TryParse(id, out int _))
-        {
-            Console.Clear();
-            Console.WriteLine("The id must be an integer greater than 0.");
-            Console.Write("Please re-enter the id: ");
-            id = Console.ReadLine();
-        }
+        id = Validator.ValidateField(TableFields.Id, id);
 
         return id;
     }
 
     public static void ReadEntry(SqliteConnection connection)
     {
-        string? primaryKey = GetId(CrudOps.Read);
+        string? primaryKey = PromptForId(CrudOps.Read);
         var selectCommand = connection.CreateCommand();
 
         selectCommand.CommandText = "SELECT * FROM tracker";

@@ -4,17 +4,9 @@ namespace HabitTracker;
 
 public class Database
 {
-    public static bool CloseConnection(SqliteConnection connection)
-    {
-        Console.WriteLine("Goodbye.");
-        connection.Close();
-        return false;
-    }
-
     public static void CreateDatabase(SqliteConnection connection)
     {
-        Console.WriteLine("Creating database...");
-        Console.WriteLine("Database created.");
+        Console.WriteLine("Creating database...\nDatabase created.");
 
         var command = connection.CreateCommand();
 
@@ -28,6 +20,8 @@ public class Database
             ";
 
         command.ExecuteNonQuery();
+
+        UserInterface.Pause();
     }
 
     public static void SeedDatabase(SqliteConnection connection)
@@ -44,5 +38,12 @@ public class Database
             ";
 
         seedCommand.ExecuteNonQuery();
+    }
+
+    public static bool CloseConnection(SqliteConnection connection)
+    {
+        Console.WriteLine("Goodbye.");
+        connection.Close();
+        return false;
     }
 }

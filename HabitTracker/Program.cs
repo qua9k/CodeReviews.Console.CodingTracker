@@ -15,7 +15,6 @@ class Program
             connection.Open();
             Database.CreateDatabase(connection);
             Database.SeedDatabase(connection);
-            UserInterface.Pause();
         }
         else
         {
