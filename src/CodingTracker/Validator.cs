@@ -1,10 +1,12 @@
+using CodingTracker.Models;
+
 namespace CodingTracker;
 
 class Validator
 {
     public static string ValidateField(string fieldType, string? value)
     {
-        if (fieldType == TableFields.Date)
+        if (fieldType == ITrackerFields.Date)
         {
             while (!DateTime.TryParse(value, out DateTime _))
             {
@@ -12,7 +14,7 @@ class Validator
                 value = Console.ReadLine();
             }
         }
-        else if (fieldType == TableFields.Count || fieldType == TableFields.Id)
+        else if (fieldType == ITrackerFields.Count || fieldType == ITrackerFields.Id)
         {
             while (!uint.TryParse(value, out uint _))
             {
@@ -38,16 +40,16 @@ class Validator
 
         switch (field)
         {
-            case TableFields.Id:
+            case ITrackerFields.Id:
                 Console.WriteLine("The id must be an integer greater than 0.");
                 break;
-            case TableFields.Date:
+            case ITrackerFields.Date:
                 Console.WriteLine("The date must be valid and in YYYY-mm-dd format.");
                 break;
-            case TableFields.Habit:
+            case ITrackerFields.Habit:
                 Console.WriteLine("The habit must not be empty.");
                 break;
-            case TableFields.Count:
+            case ITrackerFields.Count:
                 Console.WriteLine("The count must be a number greater than 0.");
                 break;
         }

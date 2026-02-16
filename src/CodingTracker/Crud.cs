@@ -1,4 +1,6 @@
 using CodingTracker;
+using CodingTracker.Controllers;
+using CodingTracker.Models;
 using Microsoft.Data.Sqlite;
 
 class Crud : ICrudController
@@ -127,7 +129,7 @@ class Crud : ICrudController
             return id;
         }
 
-        id = Validator.ValidateField(TableFields.Id, id);
+        id = Validator.ValidateField(ITrackerFields.Id, id);
 
         return id;
     }

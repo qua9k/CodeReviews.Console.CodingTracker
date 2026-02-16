@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using CodingTracker.Models;
+using Dapper;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 
 namespace CodingTracker;
@@ -9,21 +11,31 @@ class Program
     {
         IConfiguration config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
         IConfigurationSection settingsSection = config.GetSection("Settings");
-        Console.WriteLine($"Database file: {settingsSection["Database"]}");
+        string? dbPath = settingsSection["DatabasePath"];
 
         using var connection = new SqliteConnection();
 
-        if (!File.Exists(settingsSection["Database"]))
+        if (!File.Exists(dbPath))
         {
-            connection.ConnectionString = $"Data Source={settingsSection["Database"]}";
+            connection.ConnectionString = $"Data Source={dbPath}";
             connection.Open();
             Database.CreateDatabase(connection);
             Database.SeedDatabase(connection);
         }
         else
         {
-            connection.ConnectionString = $"Data Source={settingsSection["Database"]}";
+            connection.ConnectionString = $"Data Source={dbPath}";
             connection.Open();
+            var entries = connection.Query<Tracker>("SELECT * FROM tracker");
+            Console.WriteLine("Products in Database:");
+            Console.WriteLine("---------------------");
+            foreach (var entry in entries)
+            {
+                Console.WriteLine(
+                    $"Id: {entry.Id}, Habit: {entry.Habit}, Date: ${entry.Date}, Count: {entry.Count}"
+                );
+            }
+            UserInterface.Pause();
         }
 
         bool connected = true;
