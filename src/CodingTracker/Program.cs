@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Configuration;
 
 namespace CodingTracker;
 
@@ -6,19 +7,22 @@ class Program
 {
     static void Main()
     {
-        var databaseFile = "habit.db";
+        IConfiguration config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+        IConfigurationSection settingsSection = config.GetSection("Settings");
+        Console.WriteLine($"Database file: {settingsSection["Database"]}");
+
         using var connection = new SqliteConnection();
 
-        if (!File.Exists(databaseFile))
+        if (!File.Exists(settingsSection["Database"]))
         {
-            connection.ConnectionString = $"Data Source={databaseFile}";
+            connection.ConnectionString = $"Data Source={settingsSection["Database"]}";
             connection.Open();
             Database.CreateDatabase(connection);
             Database.SeedDatabase(connection);
         }
         else
         {
-            connection.ConnectionString = $"Data Source={databaseFile}";
+            connection.ConnectionString = $"Data Source={settingsSection["Database"]}";
             connection.Open();
         }
 
