@@ -2,6 +2,7 @@ using Microsoft.Data.Sqlite;
 
 namespace CodingTracker;
 
+// [[todo]] :: convert to dapper
 public class Database
 {
     public static void CreateDatabase(SqliteConnection connection)
@@ -12,7 +13,7 @@ public class Database
 
         command.CommandText =
             @"
-                CREATE TABLE tracker (
+                CREATE TABLE Tracker (
                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                     date DATE NOT NULL,
                     habit TEXT NOT NULL,
@@ -31,7 +32,7 @@ public class Database
 
         seedCommand.CommandText =
             @"
-              INSERT INTO tracker
+              INSERT INTO Tracker
               VALUES 
               (1, '1901-01-01', 'Rock Climbing', 1),
               (2, '1902-02-02', 'Guitar', 2),

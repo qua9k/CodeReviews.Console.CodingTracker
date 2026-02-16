@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace CodingTracker.Models;
 
 interface ITrackerFields
@@ -8,6 +10,7 @@ interface ITrackerFields
     internal const string Count = "count";
 }
 
+[Table("Tracker")]
 public class Tracker : ITrackerFields
 {
     public required int Id { get; set; }

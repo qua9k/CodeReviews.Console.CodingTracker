@@ -1,6 +1,7 @@
 using CodingTracker;
 using CodingTracker.Controllers;
 using CodingTracker.Models;
+using Dapper;
 using Microsoft.Data.Sqlite;
 
 class Crud : ICrudController
@@ -119,7 +120,7 @@ class Crud : ICrudController
         }
         else
         {
-            Console.Write($"{message} ('*' for all entries): ");
+            Console.Write($"{message} ('*' for all results): ");
         }
 
         var id = Console.ReadLine();
@@ -136,30 +137,26 @@ class Crud : ICrudController
 
     public static bool EntryExists(SqliteConnection connection, string primaryKey)
     {
-        var selectCommand = connection.CreateCommand();
-
-        selectCommand.CommandText = $"SELECT * FROM tracker WHERE id = {primaryKey}";
-
-        using var reader = selectCommand.ExecuteReader();
-
-        return reader.HasRows;
+        List<Tracker> results =
+        [
+            .. connection.Query<Tracker>($"SELECT * FROM tracker WHERE id = {primaryKey}"),
+        ];
+        return results.Count > 0;
     }
 
     public static void ReadEntry(SqliteConnection connection)
     {
         var primaryKey = PromptForId(CrudOps.Read);
-        var selectCommand = connection.CreateCommand();
-
-        selectCommand.CommandText = "SELECT * FROM tracker";
+        var query = "SELECT * FROM Tracker";
 
         if (primaryKey != "*")
         {
-            selectCommand.CommandText += $" WHERE id = {primaryKey}";
+            query += $" WHERE id = {primaryKey}";
         }
 
-        using var reader = selectCommand.ExecuteReader();
+        List<Tracker> results = [.. connection.Query<Tracker>(query)];
 
-        if (!reader.HasRows)
+        if (results.Count < 1)
         {
             Console.Clear();
             Console.WriteLine($"Your query returned no results.");
@@ -169,14 +166,11 @@ class Crud : ICrudController
             Console.Clear();
             Console.WriteLine("Your query results:\n");
 
-            while (reader.Read())
+            foreach (var entry in results)
             {
-                var id = reader.GetInt16(0);
-                var date = reader.GetDateTime(1);
-                var habit = reader.GetString(2);
-                var count = reader.GetInt16(3);
-
-                Console.WriteLine($"{id}.) [{date:MMM}. {date.Day}, {date.Year}] {habit} x{count}");
+                Console.WriteLine(
+                    $"{entry.Id}.) [{entry.Date:MMM}. {entry.Date.Day}, {entry.Date.Year}] {entry.Habit} x{entry.Count}"
+                );
             }
         }
 

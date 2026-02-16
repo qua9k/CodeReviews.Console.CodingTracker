@@ -26,16 +26,6 @@ class Program
         {
             connection.ConnectionString = $"Data Source={dbPath}";
             connection.Open();
-            var entries = connection.Query<Tracker>("SELECT * FROM tracker");
-            Console.WriteLine("Products in Database:");
-            Console.WriteLine("---------------------");
-            foreach (var entry in entries)
-            {
-                Console.WriteLine(
-                    $"Id: {entry.Id}, Habit: {entry.Habit}, Date: ${entry.Date}, Count: {entry.Count}"
-                );
-            }
-            UserInterface.Pause();
         }
 
         bool connected = true;
