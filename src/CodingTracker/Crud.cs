@@ -1,4 +1,4 @@
-using HabitTracker;
+using CodingTracker;
 using Microsoft.Data.Sqlite;
 
 class Crud : ICrudController

@@ -1,6 +1,6 @@
 using Microsoft.Data.Sqlite;
 
-namespace HabitTracker;
+namespace CodingTracker;
 
 interface ICrudController
 {

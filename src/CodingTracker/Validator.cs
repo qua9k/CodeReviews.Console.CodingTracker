@@ -1,4 +1,4 @@
-namespace HabitTracker;
+namespace CodingTracker;
 
 class Validator
 {
