@@ -9,10 +9,10 @@ Exposure to the above technologies.
 
 ## Design
 
-The database is composed of one table with three fields:
+The database is composed of a single table:
 
-| id  | date       | count |
-| --- | ---------- | ----- |
-| 1   | 2026-01-01 | 3     |
-| 2   | 2026-01-02 | 4     |
-| 3   | 2026-01-03 | 1     |
+| id  | habit   | date       | count |
+| --- | ------- | ---------- | ----- |
+| 1   | Skiing  | 2026-01-01 | 3     |
+| 2   | Writing | 2026-01-02 | 4     |
+| 3   | Cooking | 2026-01-03 | 1     |

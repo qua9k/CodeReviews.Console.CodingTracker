@@ -7,16 +7,9 @@ class Crud : ICrudController
     {
         Console.Clear();
 
-        Console.Write("Enter the habit: ");
-        var habit = Console.ReadLine();
-
-        Console.Write("Enter the date (YYYY-mm-dd): ");
-        var date = Console.ReadLine();
-        date = Validator.ValidateField("date", date);
-
-        Console.Write("Enter the habit count: ");
-        var count = Console.ReadLine();
-        count = Validator.ValidateField("count", count);
+        var habit = PromptForHabit();
+        var date = PromptForDate();
+        var count = PromptForCount();
 
         var seedCommand = connection.CreateCommand();
 
@@ -32,27 +25,33 @@ class Crud : ICrudController
         UserInterface.Pause();
     }
 
-    // [[bug]] [[todo]] :: implement
     public static void UpdateEntry(SqliteConnection connection)
     {
         var primaryKey = PromptForId(CrudOps.Update);
+
+        if (!EntryExists(connection, primaryKey))
+        {
+            Console.WriteLine($"That entry does not exist.");
+            UserInterface.Pause();
+            return;
+        }
+
         var updateCommand = connection.CreateCommand();
-
-        DateTime newDate = DateTime.Now;
-        var habit = "Skateboarding";
-        var newCount = 99;
-
-        Console.WriteLine($"the date: {newDate}");
+        var habit = PromptForHabit();
+        var date = PromptForDate();
+        var count = PromptForCount();
 
         updateCommand.CommandText =
             @$"
                 UPDATE tracker
-                SET date = '{newDate}',
+                SET date = '{date}',
                     habit = '{habit}',
-                    count = {newCount}
+                    count = '{count}'
                 WHERE
                     id = {primaryKey}
             ";
+
+        updateCommand.ExecuteNonQuery();
 
         UserInterface.Pause();
     }
@@ -72,6 +71,30 @@ class Crud : ICrudController
         deleteCommand.ExecuteNonQuery();
 
         UserInterface.Pause();
+    }
+
+    public static string PromptForHabit()
+    {
+        Console.Write("Enter the habit: ");
+        var habit = Console.ReadLine();
+        habit = Validator.ValidateField("habit", habit);
+        return habit;
+    }
+
+    public static string PromptForCount()
+    {
+        Console.Write("Enter the count: ");
+        var count = Console.ReadLine();
+        count = Validator.ValidateField("count", count);
+        return count;
+    }
+
+    public static string PromptForDate()
+    {
+        Console.Write("Enter the date (YYYY-mm-dd): ");
+        var date = Console.ReadLine();
+        date = Validator.ValidateField("date", date);
+        return date;
     }
 
     public static string PromptForId(string crudOp)
@@ -99,6 +122,17 @@ class Crud : ICrudController
         id = Validator.ValidateField(TableFields.Id, id);
 
         return id;
+    }
+
+    public static bool EntryExists(SqliteConnection connection, string primaryKey)
+    {
+        var selectCommand = connection.CreateCommand();
+
+        selectCommand.CommandText = $"SELECT * FROM tracker WHERE id = {primaryKey}";
+
+        using var reader = selectCommand.ExecuteReader();
+
+        return reader.HasRows;
     }
 
     public static void ReadEntry(SqliteConnection connection)

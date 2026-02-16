@@ -20,6 +20,14 @@ class Validator
                 value = Console.ReadLine();
             }
         }
+        else
+        {
+            while (string.IsNullOrEmpty(value))
+            {
+                PrintValidatorMessage(fieldType);
+                value = Console.ReadLine();
+            }
+        }
 
         return value;
     }
@@ -32,18 +40,17 @@ class Validator
         {
             case TableFields.Id:
                 Console.WriteLine("The id must be an integer greater than 0.");
-                Console.Write("Please re-enter the id: ");
                 break;
             case TableFields.Date:
                 Console.WriteLine("The date must be valid and in YYYY-mm-dd format.");
-                Console.Write("Please re-enter the date: ");
+                break;
+            case TableFields.Habit:
+                Console.WriteLine("The habit must not be empty.");
                 break;
             case TableFields.Count:
-                Console.WriteLine("Habit count must be a number greater than 0.");
-                Console.Write("Please re-enter the habit count: ");
-                break;
-            default:
+                Console.WriteLine("The count must be a number greater than 0.");
                 break;
         }
+        Console.Write($"Please re-enter the {field}: ");
     }
 }
