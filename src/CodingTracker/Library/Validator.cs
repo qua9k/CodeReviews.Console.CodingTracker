@@ -1,6 +1,6 @@
 using CodingTracker.Models;
 
-namespace CodingTracker;
+namespace CodingTracker.Library;
 
 class Validator
 {

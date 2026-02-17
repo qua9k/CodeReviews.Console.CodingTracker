@@ -1,7 +1,8 @@
-using CodingTracker;
 using CodingTracker.Models;
 using Dapper;
 using Microsoft.Data.Sqlite;
+
+namespace CodingTracker.Library;
 
 static class CrudOperations
 {
@@ -19,7 +20,7 @@ interface ICrudActions
     static abstract void DeleteEntry(SqliteConnection connection);
 }
 
-class CrudController
+class Crud
 {
     public static void CreateEntry(SqliteConnection connection)
     {

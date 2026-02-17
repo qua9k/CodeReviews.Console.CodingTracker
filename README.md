@@ -1,7 +1,7 @@
-# Habit Tracker
+# Coding Tracker
 
-A simple habit tracker. Occurrences of a habit are stored in a database via
-CRUD operations. It uses `.NET`, `ADO.NET`, and `SQLite`.
+A simple coding habit tracker. Occurrences of a habit are stored in a database via
+CRUD operations. It uses `.NET`, `Dapper`, `SQLite`, and `Spectre`.
 
 ## Purpose
 

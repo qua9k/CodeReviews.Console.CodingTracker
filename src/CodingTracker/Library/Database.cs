@@ -1,6 +1,6 @@
 using Microsoft.Data.Sqlite;
 
-namespace CodingTracker;
+namespace CodingTracker.Library;
 
 // [[todo]] :: convert to dapper
 public class Database
@@ -9,9 +9,7 @@ public class Database
     {
         Console.WriteLine("Creating database...\nDatabase created.");
 
-        var command = connection.CreateCommand();
-
-        command.CommandText =
+        var operation =
             @"
                 CREATE TABLE Tracker (
                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -21,8 +19,9 @@ public class Database
                 )
             ";
 
+        var command = connection.CreateCommand();
+        command.CommandText = operation;
         command.ExecuteNonQuery();
-
         UserInterface.Pause();
     }
 
@@ -30,7 +29,7 @@ public class Database
     {
         var seedCommand = connection.CreateCommand();
 
-        seedCommand.CommandText =
+        var operation =
             @"
               INSERT INTO Tracker
               VALUES 
@@ -39,13 +38,13 @@ public class Database
               (3, '1903-03-03', 'Painting', 3)
             ";
 
+        seedCommand.CommandText = operation;
         seedCommand.ExecuteNonQuery();
     }
 
-    public static bool CloseConnection(SqliteConnection connection)
+    public static void CloseConnection(SqliteConnection connection)
     {
         Console.WriteLine("Goodbye.");
         connection.Close();
-        return false;
     }
 }

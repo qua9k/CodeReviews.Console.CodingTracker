@@ -1,5 +1,4 @@
-﻿using CodingTracker.Models;
-using Dapper;
+﻿using CodingTracker.Library;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 
@@ -39,19 +38,20 @@ class Program
             switch (input)
             {
                 case "c":
-                    CrudController.CreateEntry(connection);
+                    Crud.CreateEntry(connection);
                     break;
                 case "r":
-                    CrudController.ReadEntry(connection);
+                    Crud.ReadEntry(connection);
                     break;
                 case "u":
-                    CrudController.UpdateEntry(connection);
+                    Crud.UpdateEntry(connection);
                     break;
                 case "d":
-                    CrudController.DeleteEntry(connection);
+                    Crud.DeleteEntry(connection);
                     break;
                 case "x":
-                    connected = Database.CloseConnection(connection);
+                    Database.CloseConnection(connection);
+                    connected = false;
                     break;
                 default:
                     UserInterface.PrintInputUnknown();
