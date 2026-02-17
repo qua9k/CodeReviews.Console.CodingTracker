@@ -39,16 +39,16 @@ class Program
             switch (input)
             {
                 case "c":
-                    Crud.CreateEntry(connection);
+                    CrudController.CreateEntry(connection);
                     break;
                 case "r":
-                    Crud.ReadEntry(connection);
+                    CrudController.ReadEntry(connection);
                     break;
                 case "u":
-                    Crud.UpdateEntry(connection);
+                    CrudController.UpdateEntry(connection);
                     break;
                 case "d":
-                    Crud.DeleteEntry(connection);
+                    CrudController.DeleteEntry(connection);
                     break;
                 case "x":
                     connected = Database.CloseConnection(connection);

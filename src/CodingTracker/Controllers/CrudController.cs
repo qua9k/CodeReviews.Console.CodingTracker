@@ -1,10 +1,25 @@
 using CodingTracker;
-using CodingTracker.Controllers;
 using CodingTracker.Models;
 using Dapper;
 using Microsoft.Data.Sqlite;
 
-class Crud : ICrudController
+static class CrudOperations
+{
+    internal static readonly string Create = "create";
+    internal static readonly string Read = "read";
+    internal static readonly string Update = "update";
+    internal static readonly string Delete = "delete";
+}
+
+interface ICrudActions
+{
+    static abstract void CreateEntry(SqliteConnection connection);
+    static abstract void ReadEntry(SqliteConnection connection);
+    static abstract void UpdateEntry(SqliteConnection connection);
+    static abstract void DeleteEntry(SqliteConnection connection);
+}
+
+class CrudController
 {
     public static void CreateEntry(SqliteConnection connection)
     {
@@ -30,7 +45,7 @@ class Crud : ICrudController
 
     public static void UpdateEntry(SqliteConnection connection)
     {
-        var primaryKey = PromptForId(CrudOps.Update);
+        var primaryKey = PromptForId(CrudOperations.Update);
 
         if (!EntryExists(connection, primaryKey))
         {
@@ -61,7 +76,7 @@ class Crud : ICrudController
 
     public static void DeleteEntry(SqliteConnection connection)
     {
-        var primaryKey = PromptForId(CrudOps.Delete);
+        var primaryKey = PromptForId(CrudOperations.Delete);
         var deleteCommand = connection.CreateCommand();
 
         deleteCommand.CommandText = $"DELETE FROM tracker";
@@ -114,7 +129,7 @@ class Crud : ICrudController
 
         Console.Clear();
 
-        if (crudOp == CrudOps.Update)
+        if (crudOp == CrudOperations.Update)
         {
             Console.Write($"{message}: ");
         }
@@ -125,7 +140,7 @@ class Crud : ICrudController
 
         var id = Console.ReadLine();
 
-        if (id == "*" && (crudOp == CrudOps.Delete || crudOp == CrudOps.Read))
+        if (id == "*" && (crudOp == CrudOperations.Delete || crudOp == CrudOperations.Read))
         {
             return id;
         }
@@ -146,7 +161,7 @@ class Crud : ICrudController
 
     public static void ReadEntry(SqliteConnection connection)
     {
-        var primaryKey = PromptForId(CrudOps.Read);
+        var primaryKey = PromptForId(CrudOperations.Read);
         var query = "SELECT * FROM Tracker";
 
         if (primaryKey != "*")
