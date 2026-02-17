@@ -14,16 +14,18 @@ static class CrudOperations
 
 interface ICrudActions
 {
-    static abstract void CreateEntry(SqliteConnection connection);
-    static abstract void ReadEntry(SqliteConnection connection);
-    static abstract void UpdateEntry(SqliteConnection connection);
-    static abstract void DeleteEntry(SqliteConnection connection);
+    static abstract void CreateEntry(string connectionString);
+    static abstract void ReadEntry(string connectionString);
+    static abstract void UpdateEntry(string connectionString);
+    static abstract void DeleteEntry(string connectionString);
 }
 
-class Crud
+class Crud : ICrudActions
 {
-    public static void CreateEntry(SqliteConnection connection)
+    public static void CreateEntry(string connectionString)
     {
+        using SqliteConnection connection = new() { ConnectionString = connectionString };
+
         Console.Clear();
 
         var habit = PromptForHabit();
@@ -44,8 +46,10 @@ class Crud
         UserInterface.Pause();
     }
 
-    public static void UpdateEntry(SqliteConnection connection)
+    public static void UpdateEntry(string connectionString)
     {
+        using SqliteConnection connection = new() { ConnectionString = connectionString };
+
         var primaryKey = PromptForId(CrudOperations.Update);
 
         if (!EntryExists(connection, primaryKey))
@@ -75,8 +79,9 @@ class Crud
         UserInterface.Pause();
     }
 
-    public static void DeleteEntry(SqliteConnection connection)
+    public static void DeleteEntry(string connectionString)
     {
+        using SqliteConnection connection = new() { ConnectionString = connectionString };
         var primaryKey = PromptForId(CrudOperations.Delete);
         var deleteCommand = connection.CreateCommand();
 
@@ -160,8 +165,10 @@ class Crud
         return results.Count > 0;
     }
 
-    public static void ReadEntry(SqliteConnection connection)
+    public static void ReadEntry(string connectionString)
     {
+        using SqliteConnection connection = new() { ConnectionString = connectionString };
+
         var primaryKey = PromptForId(CrudOperations.Read);
         var query = "SELECT * FROM Tracker";
 

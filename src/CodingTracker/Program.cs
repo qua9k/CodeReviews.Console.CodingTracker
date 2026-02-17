@@ -11,6 +11,7 @@ class Program
         IConfiguration config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
         IConfigurationSection settingsSection = config.GetSection("Settings");
         string? dbPath = settingsSection["DatabasePath"];
+        string connectionString = $"Data Source={dbPath}";
         Database dBase = new(dbPath);
 
         if (!File.Exists(dbPath))
@@ -23,8 +24,6 @@ class Program
 
         while (connected)
         {
-            SqliteConnection connection = new() { ConnectionString = $"Data Source={dbPath}" };
-
             UserInterface.PrintMenuOptions();
 
             var input = Console.ReadLine();
@@ -32,16 +31,16 @@ class Program
             switch (input)
             {
                 case "c":
-                    Crud.CreateEntry(connection);
+                    Crud.CreateEntry(connectionString);
                     break;
                 case "r":
-                    Crud.ReadEntry(connection);
+                    Crud.ReadEntry(connectionString);
                     break;
                 case "u":
-                    Crud.UpdateEntry(connection);
+                    Crud.UpdateEntry(connectionString);
                     break;
                 case "d":
-                    Crud.DeleteEntry(connection);
+                    Crud.DeleteEntry(connectionString);
                     break;
                 case "x":
                     Database.CloseConnection();
