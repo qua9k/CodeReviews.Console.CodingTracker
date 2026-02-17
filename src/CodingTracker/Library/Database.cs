@@ -1,12 +1,19 @@
+using Dapper;
 using Microsoft.Data.Sqlite;
 
 namespace CodingTracker.Library;
 
-// [[todo]] :: convert to dapper
-public class Database
+public class Database(string databaseFilePath)
 {
-    public static void CreateDatabase(SqliteConnection connection)
+    private readonly string _connectionString = databaseFilePath;
+
+    public void CreateDatabase()
     {
+        using SqliteConnection connection = new()
+        {
+            ConnectionString = $"Data Source={_connectionString}",
+        };
+
         Console.WriteLine("Creating database...\nDatabase created.");
 
         var operation =
@@ -19,32 +26,32 @@ public class Database
                 )
             ";
 
-        var command = connection.CreateCommand();
-        command.CommandText = operation;
-        command.ExecuteNonQuery();
+        connection.Query(operation);
+
         UserInterface.Pause();
     }
 
-    public static void SeedDatabase(SqliteConnection connection)
+    public void SeedDatabase()
     {
-        var seedCommand = connection.CreateCommand();
+        using SqliteConnection connection = new()
+        {
+            ConnectionString = $"Data Source={_connectionString}",
+        };
 
         var operation =
             @"
               INSERT INTO Tracker
               VALUES 
-              (1, '1901-01-01', 'Rock Climbing', 1),
-              (2, '1902-02-02', 'Guitar', 2),
-              (3, '1903-03-03', 'Painting', 3)
+              (1, '1901-01-01', 'Cooking', 1),
+              (2, '1902-02-02', 'Cleaning', 2),
+              (3, '1903-03-03', 'Drumming', 3)
             ";
 
-        seedCommand.CommandText = operation;
-        seedCommand.ExecuteNonQuery();
+        connection.Query(operation);
     }
 
-    public static void CloseConnection(SqliteConnection connection)
+    public static void CloseConnection()
     {
         Console.WriteLine("Goodbye.");
-        connection.Close();
     }
 }
