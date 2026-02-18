@@ -24,152 +24,32 @@ class Crud : ICrudActions
 {
     public static void CreateEntry(string connectionString)
     {
-        using SqliteConnection connection = new() { ConnectionString = connectionString };
-
         Console.Clear();
 
-        var habit = PromptForHabit();
-        var date = PromptForDate();
-        var count = PromptForCount();
-
-        var seedCommand = connection.CreateCommand();
-
-        seedCommand.CommandText =
-            $@"
-              INSERT INTO tracker(date, habit, count)
-              VALUES 
-              ('{date}', '{habit}', {count})
-            ";
-
-        seedCommand.ExecuteNonQuery();
-
-        UserInterface.Pause();
-    }
-
-    public static void UpdateEntry(string connectionString)
-    {
         using SqliteConnection connection = new() { ConnectionString = connectionString };
 
-        var primaryKey = PromptForId(CrudOperations.Update);
+        var habit = UserInterface.PromptForHabit();
+        var date = UserInterface.PromptForDate();
+        var count = UserInterface.PromptForCount();
+        var seedCommand =
+            $@" INSERT INTO tracker(date, habit, count) VALUES ('{date}', '{habit}', {count})";
 
-        if (!EntryExists(connection, primaryKey))
-        {
-            Console.WriteLine($"That entry does not exist.");
-            UserInterface.Pause();
-            return;
-        }
-
-        var updateCommand = connection.CreateCommand();
-        var habit = PromptForHabit();
-        var date = PromptForDate();
-        var count = PromptForCount();
-
-        updateCommand.CommandText =
-            @$"
-                UPDATE tracker
-                SET date = '{date}',
-                    habit = '{habit}',
-                    count = '{count}'
-                WHERE
-                    id = {primaryKey}
-            ";
-
-        updateCommand.ExecuteNonQuery();
+        connection.Query(seedCommand);
 
         UserInterface.Pause();
-    }
-
-    public static void DeleteEntry(string connectionString)
-    {
-        using SqliteConnection connection = new() { ConnectionString = connectionString };
-        var primaryKey = PromptForId(CrudOperations.Delete);
-        var deleteCommand = connection.CreateCommand();
-
-        deleteCommand.CommandText = $"DELETE FROM tracker";
-
-        if (primaryKey != "*")
-        {
-            deleteCommand.CommandText += $" WHERE id = {primaryKey}";
-        }
-
-        deleteCommand.ExecuteNonQuery();
-
-        UserInterface.Pause();
-    }
-
-    public static string PromptForHabit()
-    {
-        Console.Write("Enter the habit: ");
-        var habit = Console.ReadLine();
-        habit = Validator.ValidateField("habit", habit);
-        return habit;
-    }
-
-    public static string PromptForCount()
-    {
-        Console.Write("Enter the count: ");
-        var count = Console.ReadLine();
-        count = Validator.ValidateField("count", count);
-        return count;
-    }
-
-    public static string PromptForDate()
-    {
-        Console.Write("Enter the date (YYYY-MM-DD or 't' for today): ");
-
-        var date = Console.ReadLine();
-
-        if (date == "t")
-        {
-            date = Convert.ToString(DateTime.Today);
-        }
-
-        date = Validator.ValidateField("date", date);
-
-        return date;
-    }
-
-    public static string PromptForId(string crudOp)
-    {
-        var message = $"Enter the id of the entry to {crudOp}";
-
-        Console.Clear();
-
-        if (crudOp == CrudOperations.Update)
-        {
-            Console.Write($"{message}: ");
-        }
-        else
-        {
-            Console.Write($"{message} ('*' for all results): ");
-        }
-
-        var id = Console.ReadLine();
-
-        if (id == "*" && (crudOp == CrudOperations.Delete || crudOp == CrudOperations.Read))
-        {
-            return id;
-        }
-
-        id = Validator.ValidateField(ITrackerFields.Id, id);
-
-        return id;
-    }
-
-    public static bool EntryExists(SqliteConnection connection, string primaryKey)
-    {
-        List<Tracker> results =
-        [
-            .. connection.Query<Tracker>($"SELECT * FROM tracker WHERE id = {primaryKey}"),
-        ];
-        return results.Count > 0;
     }
 
     public static void ReadEntry(string connectionString)
     {
         using SqliteConnection connection = new() { ConnectionString = connectionString };
 
-        var primaryKey = PromptForId(CrudOperations.Read);
+        var primaryKey = UserInterface.PromptForId(CrudOperations.Read);
+
+        if (primaryKey != "*")
+        {
+            primaryKey = Validator.ValidateField(ITrackerFields.Id, primaryKey);
+        }
+
         var query = "SELECT * FROM Tracker";
 
         if (primaryKey != "*")
@@ -198,5 +78,70 @@ class Crud : ICrudActions
         }
 
         UserInterface.Pause();
+    }
+
+    public static void UpdateEntry(string connectionString)
+    {
+        using SqliteConnection connection = new() { ConnectionString = connectionString };
+
+        var primaryKey = UserInterface.PromptForId(CrudOperations.Read);
+        primaryKey = Validator.ValidateField(ITrackerFields.Id, primaryKey);
+
+        if (!EntryExists(connection, primaryKey))
+        {
+            Console.WriteLine($"That entry does not exist.");
+            UserInterface.Pause();
+            return;
+        }
+
+        var habit = UserInterface.PromptForHabit();
+        var date = UserInterface.PromptForDate();
+        var count = UserInterface.PromptForCount();
+
+        var updateCommand =
+            @$"
+                UPDATE tracker
+                SET date = '{date}',
+                    habit = '{habit}',
+                    count = '{count}'
+                WHERE
+                    id = {primaryKey}
+            ";
+
+        connection.Query(updateCommand);
+
+        UserInterface.Pause();
+    }
+
+    public static void DeleteEntry(string connectionString)
+    {
+        using SqliteConnection connection = new() { ConnectionString = connectionString };
+        var primaryKey = UserInterface.PromptForId(CrudOperations.Read);
+
+        if (primaryKey != "*")
+        {
+            primaryKey = Validator.ValidateField(ITrackerFields.Id, primaryKey);
+        }
+
+        var deleteCommand = $"DELETE FROM tracker";
+
+        if (primaryKey != "*")
+        {
+            deleteCommand += $" WHERE id = {primaryKey}";
+        }
+
+        connection.Query(deleteCommand);
+
+        UserInterface.Pause();
+    }
+
+    public static bool EntryExists(SqliteConnection connection, string primaryKey)
+    {
+        List<Tracker> results =
+        [
+            .. connection.Query<Tracker>($"SELECT * FROM tracker WHERE id = {primaryKey}"),
+        ];
+
+        return results.Count > 0;
     }
 }

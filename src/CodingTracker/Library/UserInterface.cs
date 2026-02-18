@@ -32,4 +32,61 @@ static class UserInterface
         Console.WriteLine("Your input was not understood.");
         Pause();
     }
+
+    public static string PromptForHabit()
+    {
+        Console.Write("Enter the habit: ");
+        var habit = Console.ReadLine();
+        habit = Validator.ValidateField("habit", habit);
+        return habit;
+    }
+
+    public static string PromptForCount()
+    {
+        Console.Write("Enter the count: ");
+        var count = Console.ReadLine();
+        count = Validator.ValidateField("count", count);
+        return count;
+    }
+
+    public static string PromptForDate()
+    {
+        Console.Write("Enter the date (YYYY-MM-DD or 't' for today): ");
+
+        var date = Console.ReadLine();
+
+        if (date == "t")
+        {
+            date = Convert.ToString(DateTime.Today);
+        }
+
+        date = Validator.ValidateField("date", date);
+
+        return date;
+    }
+
+    public static string PromptForId(string crudOp)
+    {
+        var message = $"Enter the id of the entry to {crudOp}";
+
+        Console.Clear();
+
+        if (crudOp == CrudOperations.Update)
+        {
+            Console.Write($"{message}: ");
+        }
+        else
+        {
+            Console.Write($"{message} ('*' for all results): ");
+        }
+
+        var id = Console.ReadLine();
+
+        if (id == "*" && (crudOp == CrudOperations.Delete || crudOp == CrudOperations.Read))
+        {
+            return id;
+        }
+
+        return id;
+    }
 }

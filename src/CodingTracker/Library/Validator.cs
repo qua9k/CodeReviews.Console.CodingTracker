@@ -14,7 +14,15 @@ class Validator
                 value = Console.ReadLine();
             }
         }
-        else if (fieldType == ITrackerFields.Count || fieldType == ITrackerFields.Id)
+        else if (fieldType == ITrackerFields.Id)
+        {
+            while (!uint.TryParse(value, out uint _))
+            {
+                PrintValidatorMessage(fieldType);
+                value = Console.ReadLine();
+            }
+        }
+        else if (fieldType == ITrackerFields.Count)
         {
             while (!uint.TryParse(value, out uint _))
             {
