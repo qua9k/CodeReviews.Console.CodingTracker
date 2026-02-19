@@ -1,4 +1,5 @@
 using CodingTracker.Models;
+using CodingTracker.Views;
 using Dapper;
 using Microsoft.Data.Sqlite;
 

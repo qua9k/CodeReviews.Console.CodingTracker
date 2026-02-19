@@ -1,4 +1,5 @@
 ﻿using CodingTracker.Library;
+using CodingTracker.Views;
 using Microsoft.Extensions.Configuration;
 
 namespace CodingTracker;

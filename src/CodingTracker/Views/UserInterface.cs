@@ -1,4 +1,6 @@
-namespace CodingTracker.Library;
+using CodingTracker.Library;
+
+namespace CodingTracker.Views;
 
 static class UserInterface
 {
