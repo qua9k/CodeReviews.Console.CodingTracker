@@ -75,7 +75,7 @@ public partial class Database : IDbActions
     {
         var primaryKey = UserInterface.PromptForId();
 
-        if (!EntryExists(_connString, primaryKey))
+        if (!EntryExists(primaryKey))
         {
             Console.WriteLine($"That entry does not exist.");
             UserInterface.Pause();
@@ -113,7 +113,7 @@ public partial class Database : IDbActions
     {
         var primaryKey = UserInterface.PromptForId();
 
-        if (!EntryExists(_connString, primaryKey))
+        if (!EntryExists(primaryKey))
         {
             Console.WriteLine($"That entry does not exist.");
             UserInterface.Pause();

@@ -80,7 +80,7 @@ public partial class Database
         Console.WriteLine("Goodbye.");
     }
 
-    public static bool EntryExists(string primaryKey)
+    public bool EntryExists(string primaryKey)
     {
         var sql = $"SELECT * FROM Tracker";
 
