@@ -38,7 +38,7 @@ static class UserInterface
         Console.Clear();
         Console.Write("Enter the habit: ");
         var habit = Console.ReadLine();
-        return Validator.ValidateHabit(habit!);
+        return InputValidator.ValidateHabit(habit!);
     }
 
     public static string PromptForCount()
@@ -46,7 +46,7 @@ static class UserInterface
         Console.Clear();
         Console.Write("Enter the count: ");
         var count = Console.ReadLine();
-        return Validator.ValidateCount(count!);
+        return InputValidator.ValidateCount(count!);
     }
 
     public static string PromptForDate()
@@ -54,7 +54,7 @@ static class UserInterface
         Console.Clear();
         Console.Write("Enter the date (YYYY-MM-DD or 't' for today): ");
         var date = Console.ReadLine();
-        return Validator.ValidateDate(date!);
+        return InputValidator.ValidateDate(date!);
     }
 
     public static string PromptForId()
@@ -62,6 +62,6 @@ static class UserInterface
         Console.Clear();
         Console.Write($"Enter the entry id ('*' for all results): ");
         var id = Console.ReadLine();
-        return Validator.ValidateId(id!);
+        return InputValidator.ValidateId(id!);
     }
 }

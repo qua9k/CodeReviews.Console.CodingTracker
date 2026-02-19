@@ -105,7 +105,7 @@ public partial class Database : IDbActions
             return;
         }
 
-        var deleteCommand = $"DELETE FROM tracker";
+        var deleteCommand = $"DELETE FROM Tracker";
 
         if (primaryKey != "*")
         {

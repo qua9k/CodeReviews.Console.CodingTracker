@@ -1,6 +1,6 @@
 namespace CodingTracker.Library;
 
-class Validator
+class InputValidator
 {
     public static string ValidateId(string value)
     {
@@ -44,7 +44,7 @@ class Validator
         while (!uint.TryParse(value, out uint _))
         {
             Console.Clear();
-            Console.WriteLine("The count must be a number greater than 0.");
+            Console.WriteLine("The count must be a positive number.");
             Console.Write($"Please re-enter the count: ");
             value = Console.ReadLine()!;
         }

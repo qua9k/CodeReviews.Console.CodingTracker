@@ -1,15 +1,15 @@
-namespace CodingTracker.Library;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-// You'll need to create a CodingSession class in a separate file.
-// It will contain the properties of your coding session: Id, StartTime, EndTime, Duration.
-// When reading from the database, you can't use an anonymous object, you have to read your table into a List of CodingSession.
+namespace CodingTracker.Models;
 
-interface ICodingSessions { }
-
+[Table("Tracker")]
 class CodingSession
 {
-    private int _id { get; set; }
-    private DateTime _startTime { get; set; } // should be able to enter manual
-    private DateTime _endTime { get; set; } // should be able to enter manual
-    private int _duration { get; set; } // calculated based on start/end time
+    [Key]
+    public required int Id { get; set; }
+    public required DateTime Date { get; set; } // should be able to enter manual
+    public required DateTime StartTime { get; set; } // should be able to enter manual
+    public required DateTime EndTime { get; set; } // should be able to enter manual
+    public required DateTime Duration { get; set; } // calculated based on start/end time
 }

@@ -32,17 +32,17 @@ public partial class Database
 
         Console.WriteLine("Creating database...\nDatabase created.");
 
-        var operation =
+        var sql =
             @"
                 CREATE TABLE Tracker (
-                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                    date DATE NOT NULL,
-                    habit TEXT NOT NULL,
-                    count INTEGER NOT NULL
+                    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    Habit TEXT NOT NULL,
+                    Date DATE NOT NULL,
+                    Count INTEGER NOT NULL
                 )
             ";
 
-        connection.Query(operation);
+        connection.Query(sql);
 
         UserInterface.Pause();
     }
@@ -51,31 +51,57 @@ public partial class Database
     {
         using SqliteConnection connection = new() { ConnectionString = _connString };
 
-        var operation =
+        var seedTrackers = new List<Tracker>
+        {
+            new()
+            {
+                Id = 0,
+                Habit = "Climbing",
+                Date = DateTime.Now,
+                Count = 0,
+            },
+            new()
+            {
+                Id = 1,
+                Habit = "Coding",
+                Date = DateTime.Now,
+                Count = 1,
+            },
+            new()
+            {
+                Id = 2,
+                Habit = "Cooking",
+                Date = DateTime.Now,
+                Count = 2,
+            },
+        };
+
+        var sql =
             @"
-              INSERT INTO Tracker
-              VALUES 
-              (1, '1901-01-01', 'Cooking', 1),
-              (2, '1902-02-02', 'Cleaning', 2),
-              (3, '1903-03-03', 'Drumming', 3)
+              INSERT INTO Tracker (Id, Habit, Date, Count)
+              VALUES (@Id, @Habit, @Date, @Count)
             ";
 
-        connection.Query(operation);
+        connection.Execute(sql, seedTrackers);
     }
 
-    public void CloseConnection()
+    public static void CloseConnection()
     {
         Console.WriteLine("Goodbye.");
     }
 
     public static bool EntryExists(string connectionString, string primaryKey)
     {
+        var sql = $"SELECT * FROM Tracker";
+
+        if (primaryKey != "*")
+        {
+            sql += $" WHERE id = {primaryKey}";
+        }
+
         using SqliteConnection connection = new() { ConnectionString = connectionString };
 
-        List<Tracker> results =
-        [
-            .. connection.Query<Tracker>($"SELECT * FROM tracker WHERE id = {primaryKey}"),
-        ];
+        List<Tracker> results = [.. connection.Query<Tracker>(sql)];
 
         return results.Count > 0;
     }

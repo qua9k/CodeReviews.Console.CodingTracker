@@ -34,7 +34,7 @@ class Program
                     database.DeleteEntry(database.GetConnectionString());
                     break;
                 case "x":
-                    database.CloseConnection();
+                    Database.CloseConnection();
                     connected = false;
                     break;
                 default:
