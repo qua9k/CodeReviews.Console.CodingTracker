@@ -6,7 +6,7 @@ static class UserInterface
 {
     public static void Pause()
     {
-        Console.WriteLine("\nPress any key to return to the main menu.");
+        Console.Write("\nPress any key to return to the main menu. ");
         Console.ReadKey();
     }
 

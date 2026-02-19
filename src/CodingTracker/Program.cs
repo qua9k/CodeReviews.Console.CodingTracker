@@ -23,16 +23,16 @@ class Program
             switch (input)
             {
                 case "c":
-                    database.CreateEntry(database.GetConnectionString());
+                    database.CreateEntry();
                     break;
                 case "r":
-                    database.ReadEntry(database.GetConnectionString());
+                    database.ReadEntry();
                     break;
                 case "u":
-                    database.UpdateEntry(database.GetConnectionString());
+                    database.UpdateEntry();
                     break;
                 case "d":
-                    database.DeleteEntry(database.GetConnectionString());
+                    database.DeleteEntry();
                     break;
                 case "x":
                     Database.CloseConnection();

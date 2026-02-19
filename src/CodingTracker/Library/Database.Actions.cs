@@ -7,30 +7,38 @@ namespace CodingTracker.Library;
 
 interface IDbActions
 {
-    void CreateEntry(string connectionString);
-    void ReadEntry(string connectionString);
-    void UpdateEntry(string connectionString);
-    void DeleteEntry(string connectionString);
+    void CreateEntry();
+    void ReadEntry();
+    void UpdateEntry();
+    void DeleteEntry();
 }
 
 public partial class Database : IDbActions
 {
-    public void CreateEntry(string connectionString)
+    public void CreateEntry()
     {
-        var habit = UserInterface.PromptForHabit();
-        var date = UserInterface.PromptForDate();
-        var count = UserInterface.PromptForCount();
-        var seedCommand =
-            $@" INSERT INTO tracker(date, habit, count) VALUES ('{date}', '{habit}', {count})";
+        CodingSession newSession = new()
+        {
+            Id = 3,
+            Date = DateTime.Now,
+            StartTime = DateTime.Now,
+            EndTime = DateTime.Now,
+        };
 
-        using SqliteConnection connection = new() { ConnectionString = connectionString };
+        var sql =
+            @"
+              INSERT INTO Tracker (Id, Date, StartTime, EndTime, Duration)
+              VALUES (@Id, @Date, @StartTime, @EndTime, @Duration)
+            ";
 
-        connection.Query(seedCommand);
+        using SqliteConnection connection = new() { ConnectionString = _connString };
+
+        connection.Execute(sql, newSession);
 
         UserInterface.Pause();
     }
 
-    public void ReadEntry(string connectionString)
+    public void ReadEntry()
     {
         var primaryKey = UserInterface.PromptForId();
         var query = "SELECT * FROM Tracker";
@@ -40,11 +48,11 @@ public partial class Database : IDbActions
             query += $" WHERE id = {primaryKey}";
         }
 
-        using SqliteConnection connection = new() { ConnectionString = connectionString };
+        using SqliteConnection connection = new() { ConnectionString = _connString };
 
-        List<Tracker> results = [.. connection.Query<Tracker>(query)];
+        List<CodingSession> results = [.. connection.Query<CodingSession>(query)];
 
-        Console.WriteLine("Your query results:\n");
+        Console.WriteLine("\nYour query results:\n");
 
         if (results.Count < 1)
         {
@@ -55,7 +63,7 @@ public partial class Database : IDbActions
             foreach (var entry in results)
             {
                 Console.WriteLine(
-                    $"{entry.Id}.) [{entry.Date:MMM}. {entry.Date.Day}, {entry.Date.Year}] {entry.Habit} x{entry.Count}"
+                    $"{entry.Id}.) [{entry.Date:MMM}. {entry.Date.Day}, {entry.Date.Year}] {entry.StartTime} {entry.EndTime} {entry.Duration}"
                 );
             }
         }
@@ -63,43 +71,49 @@ public partial class Database : IDbActions
         UserInterface.Pause();
     }
 
-    public void UpdateEntry(string connectionString)
+    public void UpdateEntry()
     {
         var primaryKey = UserInterface.PromptForId();
 
-        if (!EntryExists(connectionString, primaryKey))
+        if (!EntryExists(_connString, primaryKey))
         {
             Console.WriteLine($"That entry does not exist.");
             UserInterface.Pause();
             return;
         }
 
-        var habit = UserInterface.PromptForHabit();
-        var date = UserInterface.PromptForDate();
-        var count = UserInterface.PromptForCount();
+        // [[todo]] :: must update
+        //     [[bug]] ::
+        CodingSession newSession = new()
+        {
+            Id = 0,
+            Date = new DateTime(9999, 01, 01),
+            StartTime = DateTime.Now,
+            EndTime = DateTime.Now,
+        };
 
         var updateCommand =
             @$"
                 UPDATE tracker
-                SET date = '{date}',
-                    habit = '{habit}',
-                    count = '{count}'
-                WHERE
-                    id = {primaryKey}
+                SET Date = @Date,
+                    StartTime = @StartTime,
+                    EndTime = @EndTime
+                WHERE 
+                    id = @Id
             ";
 
-        using SqliteConnection connection = new() { ConnectionString = connectionString };
+        using SqliteConnection connection = new() { ConnectionString = _connString };
 
-        connection.Query(updateCommand);
+        connection.Execute(updateCommand, newSession);
 
         UserInterface.Pause();
     }
 
-    public void DeleteEntry(string connectionString)
+    public void DeleteEntry()
     {
         var primaryKey = UserInterface.PromptForId();
 
-        if (!EntryExists(connectionString, primaryKey))
+        if (!EntryExists(_connString, primaryKey))
         {
             Console.WriteLine($"That entry does not exist.");
             UserInterface.Pause();
@@ -113,9 +127,9 @@ public partial class Database : IDbActions
             deleteCommand += $" WHERE id = {primaryKey}";
         }
 
-        using SqliteConnection connection = new() { ConnectionString = connectionString };
+        using SqliteConnection connection = new() { ConnectionString = _connString };
 
-        connection.Query(deleteCommand);
+        connection.Execute(deleteCommand);
 
         UserInterface.Pause();
     }

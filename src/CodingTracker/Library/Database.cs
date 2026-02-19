@@ -22,26 +22,22 @@ public partial class Database
         }
     }
 
-    public string GetConnectionString()
-    {
-        return _connString;
-    }
-
     public void CreateDatabase()
     {
-        using SqliteConnection connection = new() { ConnectionString = _connString };
-
         Console.WriteLine("Creating database...\nDatabase created.");
 
         var sql =
             @"
                 CREATE TABLE Tracker (
                     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                    Habit TEXT NOT NULL,
                     Date DATE NOT NULL,
-                    Count INTEGER NOT NULL
+                    StartTime DATE NOT NULL,
+                    EndTime DATE NOT NULL,
+                    Duration DATE NOT NULL
                 )
             ";
+
+        using SqliteConnection connection = new() { ConnectionString = _connString };
 
         connection.Query(sql);
 
@@ -52,35 +48,28 @@ public partial class Database
     {
         using SqliteConnection connection = new() { ConnectionString = _connString };
 
-        var seedTrackers = new List<Tracker>
+        var seedTrackers = new List<CodingSession>
         {
             new()
             {
                 Id = 0,
-                Habit = "Climbing",
                 Date = DateTime.Now,
-                Count = 0,
+                StartTime = DateTime.Now,
+                EndTime = DateTime.Now,
             },
             new()
             {
                 Id = 1,
-                Habit = "Coding",
                 Date = DateTime.Now,
-                Count = 1,
-            },
-            new()
-            {
-                Id = 2,
-                Habit = "Cooking",
-                Date = DateTime.Now,
-                Count = 2,
+                StartTime = DateTime.Now,
+                EndTime = DateTime.Now,
             },
         };
 
         var sql =
             @"
-              INSERT INTO Tracker (Id, Habit, Date, Count)
-              VALUES (@Id, @Habit, @Date, @Count)
+              INSERT INTO Tracker (Id, Date, StartTime, EndTime, Duration)
+              VALUES (@Id, @Date, @StartTime, @EndTime, @Duration)
             ";
 
         connection.Execute(sql, seedTrackers);
@@ -91,7 +80,7 @@ public partial class Database
         Console.WriteLine("Goodbye.");
     }
 
-    public static bool EntryExists(string connectionString, string primaryKey)
+    public static bool EntryExists(string primaryKey)
     {
         var sql = $"SELECT * FROM Tracker";
 
@@ -100,9 +89,9 @@ public partial class Database
             sql += $" WHERE id = {primaryKey}";
         }
 
-        using SqliteConnection connection = new() { ConnectionString = connectionString };
+        using SqliteConnection connection = new() { ConnectionString = _connString };
 
-        List<Tracker> results = [.. connection.Query<Tracker>(sql)];
+        List<CodingSession> results = [.. connection.Query<CodingSession>(sql)];
 
         return results.Count > 0;
     }
