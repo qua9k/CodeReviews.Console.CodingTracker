@@ -1,5 +1,4 @@
 ﻿using CodingTracker.Library;
-using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 
 namespace CodingTracker;
@@ -9,18 +8,10 @@ class Program
     static void Main()
     {
         IConfiguration config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-        IConfigurationSection settingsSection = config.GetSection("Settings");
-        string? dbPath = settingsSection["DatabasePath"];
-        string connectionString = $"Data Source={dbPath}";
-        Database dBase = new(dbPath);
+        var databaseFilePath = config.GetSection("Settings")["DatabasePath"];
+        Database database = new(databaseFilePath!);
 
-        if (!File.Exists(dbPath))
-        {
-            dBase.CreateDatabase();
-            dBase.SeedDatabase();
-        }
-
-        bool connected = true;
+        var connected = true;
 
         while (connected)
         {
@@ -31,19 +22,19 @@ class Program
             switch (input)
             {
                 case "c":
-                    Crud.CreateEntry(connectionString);
+                    database.CreateEntry(database.GetConnectionString());
                     break;
                 case "r":
-                    Crud.ReadEntry(connectionString);
+                    database.ReadEntry(database.GetConnectionString());
                     break;
                 case "u":
-                    Crud.UpdateEntry(connectionString);
+                    database.UpdateEntry(database.GetConnectionString());
                     break;
                 case "d":
-                    Crud.DeleteEntry(connectionString);
+                    database.DeleteEntry(database.GetConnectionString());
                     break;
                 case "x":
-                    Database.CloseConnection();
+                    database.CloseConnection();
                     connected = false;
                     break;
                 default:

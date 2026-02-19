@@ -1,18 +1,34 @@
+using CodingTracker.Models;
 using Dapper;
 using Microsoft.Data.Sqlite;
 
 namespace CodingTracker.Library;
 
-public class Database(string databaseFilePath)
+public partial class Database
 {
-    private readonly string _connectionString = databaseFilePath;
+    private readonly string _dbFilePath;
+    private readonly string _connString;
+
+    public Database(string dbFilePath)
+    {
+        _dbFilePath = dbFilePath;
+        _connString = $"Data Source={_dbFilePath}";
+
+        if (!File.Exists(dbFilePath))
+        {
+            CreateDatabase();
+            SeedDatabase();
+        }
+    }
+
+    public string GetConnectionString()
+    {
+        return _connString;
+    }
 
     public void CreateDatabase()
     {
-        using SqliteConnection connection = new()
-        {
-            ConnectionString = $"Data Source={_connectionString}",
-        };
+        using SqliteConnection connection = new() { ConnectionString = _connString };
 
         Console.WriteLine("Creating database...\nDatabase created.");
 
@@ -33,10 +49,7 @@ public class Database(string databaseFilePath)
 
     public void SeedDatabase()
     {
-        using SqliteConnection connection = new()
-        {
-            ConnectionString = $"Data Source={_connectionString}",
-        };
+        using SqliteConnection connection = new() { ConnectionString = _connString };
 
         var operation =
             @"
@@ -50,8 +63,20 @@ public class Database(string databaseFilePath)
         connection.Query(operation);
     }
 
-    public static void CloseConnection()
+    public void CloseConnection()
     {
         Console.WriteLine("Goodbye.");
+    }
+
+    public static bool EntryExists(string connectionString, string primaryKey)
+    {
+        using SqliteConnection connection = new() { ConnectionString = connectionString };
+
+        List<Tracker> results =
+        [
+            .. connection.Query<Tracker>($"SELECT * FROM tracker WHERE id = {primaryKey}"),
+        ];
+
+        return results.Count > 0;
     }
 }

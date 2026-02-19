@@ -1,66 +1,67 @@
-using CodingTracker.Models;
-
 namespace CodingTracker.Library;
 
 class Validator
 {
-    public static string ValidateField(string fieldType, string? value)
+    public static string ValidateId(string value)
     {
-        if (fieldType == ITrackerFields.Date)
+        if (value == "*")
         {
-            while (!DateTime.TryParse(value, out DateTime _))
-            {
-                PrintValidatorMessage(fieldType);
-                value = Console.ReadLine();
-            }
+            return value;
         }
-        else if (fieldType == ITrackerFields.Id)
+
+        while (!uint.TryParse(value, out uint _))
         {
-            while (!uint.TryParse(value, out uint _))
-            {
-                PrintValidatorMessage(fieldType);
-                value = Console.ReadLine();
-            }
-        }
-        else if (fieldType == ITrackerFields.Count)
-        {
-            while (!uint.TryParse(value, out uint _))
-            {
-                PrintValidatorMessage(fieldType);
-                value = Console.ReadLine();
-            }
-        }
-        else
-        {
-            while (string.IsNullOrEmpty(value))
-            {
-                PrintValidatorMessage(fieldType);
-                value = Console.ReadLine();
-            }
+            Console.Clear();
+            Console.WriteLine("The id must be an integer greater than 0.");
+            Console.Write($"Please re-enter the id: ");
+            value = Console.ReadLine()!;
         }
 
         return value;
     }
 
-    public static void PrintValidatorMessage(string field)
+    public static string ValidateDate(string value)
     {
-        Console.Clear();
-
-        switch (field)
+        if (value == "t")
         {
-            case ITrackerFields.Id:
-                Console.WriteLine("The id must be an integer greater than 0.");
-                break;
-            case ITrackerFields.Date:
-                Console.WriteLine("The date must be valid and in YYYY-mm-dd format.");
-                break;
-            case ITrackerFields.Habit:
-                Console.WriteLine("The habit must not be empty.");
-                break;
-            case ITrackerFields.Count:
-                Console.WriteLine("The count must be a number greater than 0.");
-                break;
+            value = Convert.ToString(DateTime.Today);
+            return value;
         }
-        Console.Write($"Please re-enter the {field}: ");
+
+        while (!DateTime.TryParse(value, out DateTime _))
+        {
+            Console.Clear();
+            Console.WriteLine("The date must be valid and in YYYY-mm-dd format.");
+            Console.Write($"Please re-enter the date: ");
+            value = Console.ReadLine()!;
+        }
+
+        return value;
+    }
+
+    public static string ValidateCount(string value)
+    {
+        while (!uint.TryParse(value, out uint _))
+        {
+            Console.Clear();
+            Console.WriteLine("The count must be a number greater than 0.");
+            Console.Write($"Please re-enter the count: ");
+            value = Console.ReadLine()!;
+        }
+
+        return value;
+    }
+
+    public static string ValidateHabit(string value)
+    {
+        while (string.IsNullOrEmpty(value))
+        {
+            Console.Clear();
+            Console.WriteLine("The habit must not be empty.");
+            Console.Write($"Please re-enter the habit: ");
+            value = Console.ReadLine()!;
+        }
+
+        return value;
     }
 }

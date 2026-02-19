@@ -15,11 +15,11 @@ static class UserInterface
             """
             Please choose an option and press 'Enter':
 
-            'c': Create entry
-            'r': Read entry
-            'u': Update entry
-            'd': Delete entry
-            'x': Exit
+            'c': Create new coding session
+            'r': Read past coding session
+            'u': Update past coding session
+            'd': Delete past coding session
+            'x': Exit 
 
             Your choice: 
             """
@@ -35,58 +35,33 @@ static class UserInterface
 
     public static string PromptForHabit()
     {
+        Console.Clear();
         Console.Write("Enter the habit: ");
         var habit = Console.ReadLine();
-        habit = Validator.ValidateField("habit", habit);
-        return habit;
+        return Validator.ValidateHabit(habit!);
     }
 
     public static string PromptForCount()
     {
+        Console.Clear();
         Console.Write("Enter the count: ");
         var count = Console.ReadLine();
-        count = Validator.ValidateField("count", count);
-        return count;
+        return Validator.ValidateCount(count!);
     }
 
     public static string PromptForDate()
     {
+        Console.Clear();
         Console.Write("Enter the date (YYYY-MM-DD or 't' for today): ");
-
         var date = Console.ReadLine();
-
-        if (date == "t")
-        {
-            date = Convert.ToString(DateTime.Today);
-        }
-
-        date = Validator.ValidateField("date", date);
-
-        return date;
+        return Validator.ValidateDate(date!);
     }
 
-    public static string PromptForId(string crudOp)
+    public static string PromptForId()
     {
-        var message = $"Enter the id of the entry to {crudOp}";
-
         Console.Clear();
-
-        if (crudOp == CrudOperations.Update)
-        {
-            Console.Write($"{message}: ");
-        }
-        else
-        {
-            Console.Write($"{message} ('*' for all results): ");
-        }
-
+        Console.Write($"Enter the entry id ('*' for all results): ");
         var id = Console.ReadLine();
-
-        if (id == "*" && (crudOp == CrudOperations.Delete || crudOp == CrudOperations.Read))
-        {
-            return id;
-        }
-
-        return id;
+        return Validator.ValidateId(id!);
     }
 }
