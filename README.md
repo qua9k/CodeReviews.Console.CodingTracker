@@ -1,7 +1,7 @@
 # Coding Tracker
 
-A simple coding habit tracker. Occurrences of a habit are stored in a database via
-CRUD operations. It uses `.NET`, `Dapper`, `SQLite`, and `Spectre`.
+A simple coding session tracker. Occurrences of coding session are stored in a database via
+CRUD operations. This project uses `.NET`, `Dapper`, `SQLite`, and `Spectre`.
 
 ## Purpose
 
@@ -9,22 +9,22 @@ Exposure to the above technologies.
 
 ## Design
 
-The database is composed of a single table:
+The database is composed of a single table with the following columns:
 
-| id  | habit   | date       | count |
-| --- | ------- | ---------- | ----- |
-| 1   | Skiing  | 2026-01-01 | 3     |
-| 2   | Writing | 2026-01-02 | 4     |
-| 3   | Cooking | 2026-01-03 | 1     |
+| id  | Date       | Start Time | End Time | Duration |
+| --- | ---------- | ---------- | -------- | -------- |
+| 1   | YYYY-MM-DD | HH:MM:SS   | HH:MM:SS | HH:MM:SS |
 
-The database is interacted with via Command Line CRUD operations.
+## Development Difficulties
+
+Todo.
 
 ### Disclaimer
 
 To facilitate effective learning, I don't use LLMs while working on personal
-projects. I'm not a hater (professionally I'll adapt to whatever workflow is
+projects. I'm not a "hater" (professionally, I'll adapt to whatever workflow is
 expected), but I believe that LLM usage incurs a debt that can only be paid
-with experiential learning. Don't take my word for it:
+with experiential learning. This belief is backed up by research:
 
 > "We find that AI use impairs conceptual understanding, code reading, and
 > debugging abilities, without delivering significant efficiency gains on

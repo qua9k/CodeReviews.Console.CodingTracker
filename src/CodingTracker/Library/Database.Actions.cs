@@ -17,23 +17,22 @@ public partial class Database : IDbActions
 {
     public void CreateEntry()
     {
-        CodingSession newSession = new()
-        {
-            Id = 3,
-            Date = DateTime.Now,
-            StartTime = DateTime.Now,
-            EndTime = DateTime.Now,
-        };
-
+        // CodingSession newSession = new()
+        // {
+        //     Date = DateTime.Now,
+        //     StartTime = TimeOnly.FromDateTime(DateTime.Now),
+        //     EndTime = TimeOnly.FromDateTime(DateTime.Now),
+        // };
+        //
         var sql =
             @"
-              INSERT INTO Tracker (Id, Date, StartTime, EndTime, Duration)
-              VALUES (@Id, @Date, @StartTime, @EndTime, @Duration)
+              INSERT INTO Tracker (Date, StartTime, EndTime)
+              VALUES (@Date, @StartTime, @EndTime)
             ";
 
         using SqliteConnection connection = new() { ConnectionString = _connString };
 
-        connection.Execute(sql, newSession);
+        // connection.Execute(sql, newSession);
 
         UserInterface.Pause();
     }
@@ -63,7 +62,7 @@ public partial class Database : IDbActions
             foreach (var entry in results)
             {
                 Console.WriteLine(
-                    $"{entry.Id}.) [{entry.Date:MMM}. {entry.Date.Day}, {entry.Date.Year}] {entry.StartTime} {entry.EndTime} {entry.Duration}"
+                    $"{entry.Id}.) Date: {entry.Date} Start Time: {entry.StartTime} End Time: {entry.EndTime} Duration: {entry.Duration}"
                 );
             }
         }
@@ -83,14 +82,14 @@ public partial class Database : IDbActions
         }
 
         // [[todo]] :: must update
-        //     [[bug]] ::
-        CodingSession newSession = new()
-        {
-            Id = 0,
-            Date = new DateTime(9999, 01, 01),
-            StartTime = DateTime.Now,
-            EndTime = DateTime.Now,
-        };
+        // [[bug]] ::
+        // CodingSession newSession = new()
+        // {
+        //     Id = 0,
+        //     Date = DateTime.Now,
+        //     StartTime = TimeOnly.FromDateTime(DateTime.Now),
+        //     EndTime = TimeOnly.FromDateTime(DateTime.Now),
+        // };
 
         var updateCommand =
             @$"
@@ -104,7 +103,7 @@ public partial class Database : IDbActions
 
         using SqliteConnection connection = new() { ConnectionString = _connString };
 
-        connection.Execute(updateCommand, newSession);
+        // connection.Execute(updateCommand, newSession);
 
         UserInterface.Pause();
     }
