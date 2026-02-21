@@ -66,7 +66,7 @@ public partial class Database : IDbActions
             foreach (var entry in results)
             {
                 Console.WriteLine(
-                    $"{entry.Id}.) Date: {entry.Date} Start Time: {entry.StartTime} End Time: {entry.EndTime} Duration: {entry.Duration}"
+                    $"{entry.Id}.) Date: {entry.Date} Start Time: {entry.StartTime} End Time: {entry.EndTime} Duration: {entry.Duration} minutes"
                 );
             }
         }

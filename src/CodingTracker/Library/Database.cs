@@ -52,9 +52,21 @@ public partial class Database
         {
             new()
             {
-                Date = DateTime.Now.ToString("g"),
-                StartTime = DateTime.Now.ToString("g"),
-                EndTime = DateTime.Now.ToString("g"),
+                Date = "1999-01-01",
+                StartTime = "13:00",
+                EndTime = "13:41",
+            },
+            new()
+            {
+                Date = "1999-02-02",
+                StartTime = "14:00",
+                EndTime = "13:00",
+            },
+            new()
+            {
+                Date = "1999-03-03",
+                StartTime = "16:40",
+                EndTime = "19:00",
             },
         };
 
