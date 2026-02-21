@@ -2,6 +2,7 @@ using CodingTracker.Models;
 using CodingTracker.Views;
 using Dapper;
 using Microsoft.Data.Sqlite;
+using Spectre.Console;
 
 namespace CodingTracker.Library;
 
@@ -63,12 +64,21 @@ public partial class Database : IDbActions
         }
         else
         {
+            Table table = new();
+            table.AddColumns(["Id", "Date", "Start Time", "End Time", "Duration"]);
+
             foreach (var entry in results)
             {
-                Console.WriteLine(
-                    $"{entry.Id}.) Date: {entry.Date} Start Time: {entry.StartTime} End Time: {entry.EndTime} Duration: {entry.Duration} minutes"
-                );
+                var id = Convert.ToString(entry.Id);
+                var date = Convert.ToDateTime(entry.Date).ToString("d");
+                var startTime = Convert.ToDateTime(entry.StartTime).ToString("t");
+                var endTime = Convert.ToDateTime(entry.EndTime).ToString("t");
+                var duration = Convert.ToString(entry.Duration) + " minutes";
+
+                table.AddRow(id, date, startTime, endTime, duration);
             }
+
+            AnsiConsole.Write(table);
         }
 
         UserInterface.Pause();

@@ -13,13 +13,17 @@ The database is composed of a single table with the following columns:
 
 | id  | Date       | Start Time | End Time | Duration |
 | --- | ---------- | ---------- | -------- | -------- |
-| 1   | YYYY-MM-DD | HH:MM:SS   | HH:MM:SS | HH:MM:SS |
+| 1   | YYYY-MM-DD | HH:MM      | HH:MM    | HH:MM    |
 
 ## Development Difficulties
 
-- - Date and Time. How the data is stored does not need to match how it's
-    presented. Saving dates and times to the database should conform to SQLite
-    expectations, but be presented in a 'readable' format after retrieval.
+- Date and Time. How the data is stored does not need to match how it's
+  presented. Saving dates and times to the database should conform to SQLite
+  expectations, but be presented in a 'readable' format after retrieval.
+- Spectre Console is a neat library, but I'm not concerned with becoming
+  well-versed in it.
+- If the user enters an end time that is earlier than the start time, they'll
+  wind up with a negative duration. I won't be fixing this issue.
 
 ### Disclaimer
 
