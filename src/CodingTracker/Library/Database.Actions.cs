@@ -17,23 +17,26 @@ public partial class Database : IDbActions
 {
     public void CreateEntry()
     {
-        CodingSession newSession = new()
+        var date = UserInterface.PromptForDate();
+        var startTime = UserInterface.PromptForStartTime();
+        var endTime = UserInterface.PromptForEndTime();
+
+        CodingSession entry = new()
         {
-            Id = 3,
-            Date = DateTime.Now,
-            StartTime = DateTime.Now,
-            EndTime = DateTime.Now,
+            Date = date,
+            StartTime = startTime,
+            EndTime = endTime,
         };
 
         var sql =
             @"
-              INSERT INTO Tracker (Id, Date, StartTime, EndTime, Duration)
-              VALUES (@Id, @Date, @StartTime, @EndTime, @Duration)
+              INSERT INTO Tracker (Date, StartTime, EndTime)
+              VALUES (@Date, @StartTime, @EndTime)
             ";
 
         using SqliteConnection connection = new() { ConnectionString = _connString };
 
-        connection.Execute(sql, newSession);
+        connection.Execute(sql, entry);
 
         UserInterface.Pause();
     }
@@ -63,7 +66,7 @@ public partial class Database : IDbActions
             foreach (var entry in results)
             {
                 Console.WriteLine(
-                    $"{entry.Id}.) [{entry.Date:MMM}. {entry.Date.Day}, {entry.Date.Year}] {entry.StartTime} {entry.EndTime} {entry.Duration}"
+                    $"{entry.Id}.) Date: {entry.Date} Start Time: {entry.StartTime} End Time: {entry.EndTime} Duration: {entry.Duration} minutes"
                 );
             }
         }
@@ -82,14 +85,15 @@ public partial class Database : IDbActions
             return;
         }
 
-        // [[todo]] :: must update
-        //     [[bug]] ::
-        CodingSession newSession = new()
+        var date = UserInterface.PromptForDate();
+        var startTime = UserInterface.PromptForStartTime();
+        var endTime = UserInterface.PromptForEndTime();
+
+        CodingSession updatedEntry = new()
         {
-            Id = 0,
-            Date = new DateTime(9999, 01, 01),
-            StartTime = DateTime.Now,
-            EndTime = DateTime.Now,
+            Date = date,
+            StartTime = startTime,
+            EndTime = endTime,
         };
 
         var updateCommand =
@@ -99,12 +103,12 @@ public partial class Database : IDbActions
                     StartTime = @StartTime,
                     EndTime = @EndTime
                 WHERE 
-                    id = @Id
+                    id = {primaryKey}
             ";
 
         using SqliteConnection connection = new() { ConnectionString = _connString };
 
-        connection.Execute(updateCommand, newSession);
+        connection.Execute(updateCommand, updatedEntry);
 
         UserInterface.Pause();
     }

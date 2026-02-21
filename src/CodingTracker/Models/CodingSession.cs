@@ -7,9 +7,15 @@ namespace CodingTracker.Models;
 public class CodingSession
 {
     [Key]
-    public required int Id { get; set; }
-    public required DateTime Date { get; set; } // should be able to enter manual
-    public required DateTime StartTime { get; set; } // should be able to enter manual
-    public required DateTime EndTime { get; set; } // should be able to enter manual
-    public DateTime Duration { get; set; } // calculated based on start/end time
+    public uint Id { get; set; }
+    public required string Date { get; set; }
+    public required string StartTime { get; set; }
+    public required string EndTime { get; set; }
+    public double Duration
+    {
+        get
+        {
+            return Convert.ToDateTime(EndTime).Subtract(Convert.ToDateTime(StartTime)).TotalMinutes;
+        }
+    }
 }

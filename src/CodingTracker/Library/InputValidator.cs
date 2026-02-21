@@ -1,67 +1,64 @@
+using System.Globalization;
+
 namespace CodingTracker.Library;
 
 class InputValidator
 {
-    public static string ValidateId(string value)
+    public static string ValidateId(string id)
     {
-        if (value == "*")
+        if (id == "*")
         {
-            return value;
+            return id;
         }
 
-        while (!uint.TryParse(value, out uint _))
+        while (!uint.TryParse(id, out uint _))
         {
             Console.Clear();
             Console.WriteLine("The id must be an integer greater than 0.");
             Console.Write($"Please re-enter the id: ");
-            value = Console.ReadLine()!;
+            id = Console.ReadLine()!;
         }
 
-        return value;
+        return id;
     }
 
-    public static string ValidateDate(string value)
+    public static string ValidateDate(string date)
     {
-        if (value == "t")
+        if (date == "t")
         {
-            value = Convert.ToString(DateTime.Today);
-            return value;
+            date = DateTime.Now.ToString(Constants.Formats.Date);
         }
 
-        while (!DateTime.TryParse(value, out DateTime _))
+        while (
+            !DateTime.TryParseExact(date, Constants.Formats.Date, null, DateTimeStyles.None, out _)
+        )
         {
             Console.Clear();
-            Console.WriteLine("The date must be valid and in YYYY-mm-dd format.");
+            Console.WriteLine("The date must be in YYYY-MM-DD format.");
             Console.Write($"Please re-enter the date: ");
-            value = Console.ReadLine()!;
+            date = Console.ReadLine()!;
         }
 
-        return value;
+        return date;
     }
 
-    public static string ValidateCount(string value)
+    public static string ValidateTime(string time)
     {
-        while (!uint.TryParse(value, out uint _))
+        if (time == "n")
         {
-            Console.Clear();
-            Console.WriteLine("The count must be a positive number.");
-            Console.Write($"Please re-enter the count: ");
-            value = Console.ReadLine()!;
+            time = DateTime.Now.ToString(Constants.Formats.Time);
         }
 
-        return value;
-    }
-
-    public static string ValidateHabit(string value)
-    {
-        while (string.IsNullOrEmpty(value))
+        while (
+            !DateTime.TryParseExact(time, Constants.Formats.Time, null, DateTimeStyles.None, out _)
+        )
         {
             Console.Clear();
-            Console.WriteLine("The habit must not be empty.");
-            Console.Write($"Please re-enter the habit: ");
-            value = Console.ReadLine()!;
+            Console.WriteLine("The time must be in HH:MM (24-hour) format.");
+            Console.Write($"Please re-enter the time: ");
+            time = Console.ReadLine()!;
         }
 
-        return value;
+        return time;
     }
 }

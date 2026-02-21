@@ -30,10 +30,10 @@ public partial class Database
             @"
                 CREATE TABLE Tracker (
                     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                    Date DATE NOT NULL,
-                    StartTime DATE NOT NULL,
-                    EndTime DATE NOT NULL,
-                    Duration DATE NOT NULL
+                    Date TEXT NOT NULL,
+                    StartTime TEXT NOT NULL,
+                    EndTime TEXT NOT NULL,
+                    Duration TEXT 
                 )
             ";
 
@@ -52,24 +52,28 @@ public partial class Database
         {
             new()
             {
-                Id = 0,
-                Date = DateTime.Now,
-                StartTime = DateTime.Now,
-                EndTime = DateTime.Now,
+                Date = "1999-01-01",
+                StartTime = "13:00",
+                EndTime = "13:41",
             },
             new()
             {
-                Id = 1,
-                Date = DateTime.Now,
-                StartTime = DateTime.Now,
-                EndTime = DateTime.Now,
+                Date = "1999-02-02",
+                StartTime = "14:00",
+                EndTime = "13:00",
+            },
+            new()
+            {
+                Date = "1999-03-03",
+                StartTime = "16:40",
+                EndTime = "19:00",
             },
         };
 
         var sql =
             @"
-              INSERT INTO Tracker (Id, Date, StartTime, EndTime, Duration)
-              VALUES (@Id, @Date, @StartTime, @EndTime, @Duration)
+              INSERT INTO Tracker (Date, StartTime, EndTime)
+              VALUES (@Date, @StartTime, @EndTime)
             ";
 
         connection.Execute(sql, seedTrackers);

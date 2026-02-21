@@ -35,35 +35,31 @@ static class UserInterface
         Pause();
     }
 
-    public static string PromptForHabit()
+    public static string PromptForId()
     {
         Console.Clear();
-        Console.Write("Enter the habit: ");
-        var habit = Console.ReadLine();
-        return InputValidator.ValidateHabit(habit!);
-    }
-
-    public static string PromptForCount()
-    {
-        Console.Clear();
-        Console.Write("Enter the count: ");
-        var count = Console.ReadLine();
-        return InputValidator.ValidateCount(count!);
+        Console.Write($"Enter the id ('*' for all results): ");
+        return InputValidator.ValidateId(Console.ReadLine()!);
     }
 
     public static string PromptForDate()
     {
         Console.Clear();
         Console.Write("Enter the date (YYYY-MM-DD or 't' for today): ");
-        var date = Console.ReadLine();
-        return InputValidator.ValidateDate(date!);
+        return InputValidator.ValidateDate(Console.ReadLine()!);
     }
 
-    public static string PromptForId()
+    public static string PromptForStartTime()
     {
         Console.Clear();
-        Console.Write($"Enter the entry id ('*' for all results): ");
-        var id = Console.ReadLine();
-        return InputValidator.ValidateId(id!);
+        Console.Write("Enter the start time (HH:MM or 'n' for now): ");
+        return InputValidator.ValidateTime(Console.ReadLine()!);
+    }
+
+    public static string PromptForEndTime()
+    {
+        Console.Clear();
+        Console.Write("Enter the end time (HH:mm or 'n' for now): ");
+        return InputValidator.ValidateTime(Console.ReadLine()!);
     }
 }
