@@ -2,8 +2,11 @@ namespace CodingTracker;
 
 public static class Constants
 {
-    public const string DateFormat = "yyyy-MM-dd";
-    public const string TimeFormat = "HH:mm:ss";
+    public static class Formats
+    {
+        public const string Date = "yyyy-MM-dd";
+        public const string Time = "HH:mm";
+    }
 
     public static class CrudOperations
     {

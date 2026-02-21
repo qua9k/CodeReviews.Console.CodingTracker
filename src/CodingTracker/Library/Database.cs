@@ -52,9 +52,9 @@ public partial class Database
         {
             new()
             {
-                Date = DateTime.Now.ToString(Constants.DateFormat),
-                StartTime = DateTime.Now.ToString(Constants.TimeFormat),
-                EndTime = DateTime.Now.ToString(Constants.TimeFormat),
+                Date = DateTime.Now.ToString("g"),
+                StartTime = DateTime.Now.ToString("g"),
+                EndTime = DateTime.Now.ToString("g"),
             },
         };
 

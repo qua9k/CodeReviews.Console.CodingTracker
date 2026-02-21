@@ -39,31 +39,27 @@ static class UserInterface
     {
         Console.Clear();
         Console.Write($"Enter the id ('*' for all results): ");
-        var id = Console.ReadLine();
-        return InputValidator.ValidateId(id!);
+        return InputValidator.ValidateId(Console.ReadLine()!);
     }
 
     public static string PromptForDate()
     {
         Console.Clear();
-        Console.Write("Enter the date (YYYY-mm-dd or 't' for today): ");
-        var date = Console.ReadLine();
-        return InputValidator.ValidateDate(date!);
+        Console.Write("Enter the date (YYYY-MM-DD or 't' for today): ");
+        return InputValidator.ValidateDate(Console.ReadLine()!);
     }
 
     public static string PromptForStartTime()
     {
         Console.Clear();
-        Console.Write("Enter the start time (HH:mm or 'n' for now): ");
-        var startTime = Console.ReadLine();
-        return InputValidator.ValidateTime(startTime!);
+        Console.Write("Enter the start time (HH:MM or 'n' for now): ");
+        return InputValidator.ValidateTime(Console.ReadLine()!);
     }
 
     public static string PromptForEndTime()
     {
         Console.Clear();
         Console.Write("Enter the end time (HH:mm or 'n' for now): ");
-        var endTime = Console.ReadLine();
-        return InputValidator.ValidateTime(endTime!);
+        return InputValidator.ValidateTime(Console.ReadLine()!);
     }
 }

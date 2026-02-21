@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace CodingTracker.Library;
 
 class InputValidator
@@ -20,19 +22,19 @@ class InputValidator
         return id;
     }
 
-    // [[todo]] ::
     public static string ValidateDate(string date)
     {
         if (date == "t")
         {
-            date = Convert.ToString(DateTime.Today);
-            return date;
+            date = DateTime.Now.ToString(Constants.Formats.Date);
         }
 
-        while (!DateTime.TryParse(date, out DateTime _))
+        while (
+            !DateTime.TryParseExact(date, Constants.Formats.Date, null, DateTimeStyles.None, out _)
+        )
         {
             Console.Clear();
-            Console.WriteLine("The date must be valid and in YYYY-mm-dd format.");
+            Console.WriteLine("The date must be in YYYY-MM-DD format.");
             Console.Write($"Please re-enter the date: ");
             date = Console.ReadLine()!;
         }
@@ -40,19 +42,19 @@ class InputValidator
         return date;
     }
 
-    // [[todo]] ::
     public static string ValidateTime(string time)
     {
-        if (time == "t")
+        if (time == "n")
         {
-            time = Convert.ToString(DateTime.Today);
-            return time;
+            time = DateTime.Now.ToString(Constants.Formats.Time);
         }
 
-        while (!DateTime.TryParse(time, out DateTime _))
+        while (
+            !DateTime.TryParseExact(time, Constants.Formats.Time, null, DateTimeStyles.None, out _)
+        )
         {
             Console.Clear();
-            // Console.WriteLine("The date must be valid and in YYYY-mm-dd format.");
+            Console.WriteLine("The time must be in HH:MM (24-hour) format.");
             Console.Write($"Please re-enter the time: ");
             time = Console.ReadLine()!;
         }

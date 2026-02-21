@@ -17,7 +17,9 @@ The database is composed of a single table with the following columns:
 
 ## Development Difficulties
 
-Todo.
+- - Date and Time. How the data is stored does not need to match how it's
+    presented. Saving dates and times to the database should conform to SQLite
+    expectations, but be presented in a 'readable' format after retrieval.
 
 ### Disclaimer
 

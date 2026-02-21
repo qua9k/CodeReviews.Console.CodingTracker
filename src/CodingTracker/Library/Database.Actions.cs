@@ -17,13 +17,17 @@ public partial class Database : IDbActions
 {
     public void CreateEntry()
     {
-        // CodingSession newSession = new()
-        // {
-        //     Date = DateTime.Now,
-        //     StartTime = TimeOnly.FromDateTime(DateTime.Now),
-        //     EndTime = TimeOnly.FromDateTime(DateTime.Now),
-        // };
-        //
+        var date = UserInterface.PromptForDate();
+        var startTime = UserInterface.PromptForStartTime();
+        var endTime = UserInterface.PromptForEndTime();
+
+        CodingSession entry = new()
+        {
+            Date = date,
+            StartTime = startTime,
+            EndTime = endTime,
+        };
+
         var sql =
             @"
               INSERT INTO Tracker (Date, StartTime, EndTime)
@@ -32,7 +36,7 @@ public partial class Database : IDbActions
 
         using SqliteConnection connection = new() { ConnectionString = _connString };
 
-        // connection.Execute(sql, newSession);
+        connection.Execute(sql, entry);
 
         UserInterface.Pause();
     }
@@ -81,15 +85,16 @@ public partial class Database : IDbActions
             return;
         }
 
-        // [[todo]] :: must update
-        // [[bug]] ::
-        // CodingSession newSession = new()
-        // {
-        //     Id = 0,
-        //     Date = DateTime.Now,
-        //     StartTime = TimeOnly.FromDateTime(DateTime.Now),
-        //     EndTime = TimeOnly.FromDateTime(DateTime.Now),
-        // };
+        var date = UserInterface.PromptForDate();
+        var startTime = UserInterface.PromptForStartTime();
+        var endTime = UserInterface.PromptForEndTime();
+
+        CodingSession updatedEntry = new()
+        {
+            Date = date,
+            StartTime = startTime,
+            EndTime = endTime,
+        };
 
         var updateCommand =
             @$"
@@ -98,12 +103,12 @@ public partial class Database : IDbActions
                     StartTime = @StartTime,
                     EndTime = @EndTime
                 WHERE 
-                    id = @Id
+                    id = {primaryKey}
             ";
 
         using SqliteConnection connection = new() { ConnectionString = _connString };
 
-        // connection.Execute(updateCommand, newSession);
+        connection.Execute(updateCommand, updatedEntry);
 
         UserInterface.Pause();
     }
